@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -49,12 +50,27 @@ public class CrimeListFragment extends Fragment {
 
     /* Defining the ViewHolder asn an inner class. */
     private class CrimeHolder extends RecyclerView.ViewHolder {
-        public TextView mTitleTextView;
+        private Crime mCrime;
+        private TextView mTitleTextView;
+        private TextView mDateTextView;
+        private CheckBox mSolvedCheckBox;
 
+        //Constructor
         public CrimeHolder( View itemView) {
             super(itemView);
+            //Give more responsibilities to this private class
+            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_crime_title_text_view);
+            mDateTextView = (TextView) itemView.findViewById(R.id.list_item_crime_date_text_view);
+            mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_crime_solved_check_box);
+        }
 
-            mTitleTextView = (TextView) itemView;
+        /* When given a Crime, CrimeHolder will now update the title TextView, date TextView, and solved
+        * CheckBox to refelct the state of the Crime. */
+        public void bindCrime(Crime crime) {
+            mCrime = crime;
+            mTitleTextView.setText(mCrime.getTitle());
+            mDateTextView.setText(mCrime.getDate().toString());
+            mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
     }
 
@@ -74,8 +90,10 @@ public class CrimeListFragment extends Fragment {
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             /* For a 'View' a layout is inflated from the Android standard library called
-            * simple_list_item_1 which contains a single TextView, styled to look nice in a list.*/
-            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            * simple_list_item_1 which contains a single TextView, styled to look nice in a list.
+            * After creating iist_item_crime.xml, such name was substituted to provide TextView for
+            * each "crime". */
+            View view = layoutInflater.inflate(R.layout.list_item_crime, parent, false);
             return new CrimeHolder(view);
         }
 
@@ -87,7 +105,11 @@ public class CrimeListFragment extends Fragment {
         * 'Crime' object is bound to the 'View' by sending its title to the ViewHolder's TextView.*/
         public void onBindViewHolder(CrimeHolder holder, int position) {
             Crime crime = mCrimes.get(position);
-            holder.mTitleTextView.setText(crime.getTitle());
+
+            //holder.mTitleTextView.setText(crime.getTitle()); //replaced below
+
+            //Now connecting the CrimeAdapter to the bindCrime()
+            holder.bindCrime(crime);
         }
 
         @Override
