@@ -28,15 +28,29 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.util.UUID;
+
 /**
  * Created by joseluiscastillo on 9/16/15.
  */
 public class CrimeFragment extends Fragment {
 
+    private static final String ARG_CRIME_ID = "crime_id";
+
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+
+    /* method that accepts a UUID, creates an arguments bundle, creates a fragment instance
+    *  and then attaches the arguments to the fragment. */
+    public static CrimeFragment newInstance(UUID crimeId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID, crimeId);
+        CrimeFragment fragment = new CrimeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     /* Must be public because it will be called by any activity(ies)
@@ -44,6 +58,12 @@ public class CrimeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCrime = new Crime();
+
+        //Retrieve the UUID from the fragment arguments
+        UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+
+        //After getting the ID, it is used to fetch the Crime from CrimeLab.
+        mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
     }
 
     @Override
@@ -54,8 +74,13 @@ public class CrimeFragment extends Fragment {
                                                                         // The view will be added in the activity's code
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
 
+        //Now that CrimeFragment fetches a Crime, its view can display that Crime's data.
+        //Updating this line to display the Crime's title
+        mTitleField.setText(mCrime.getTitle());
+
         /* Anonymous class that implements the TextWatcher listener interface. */
         mTitleField.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //space intentionally left blank
@@ -82,9 +107,13 @@ public class CrimeFragment extends Fragment {
         //Get a reference for the CheckBox
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
 
+        //Display the solved status
+        mSolvedCheckBox.setChecked(mCrime.isSolved());
+
 
         //Set a listener that will update the mSolved field of the crime
         mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //Set the crime's solved property
