@@ -20,7 +20,6 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
-
     private CrimeAdapter mAdapter;
 
     @Override
@@ -28,11 +27,8 @@ public class CrimeListFragment extends Fragment {
 
         //Hook up the view to the fragment
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
-
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
-
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         updateUI();
 
         return view;
@@ -100,7 +96,10 @@ public class CrimeListFragment extends Fragment {
             //Start a CrimeActivity from a Fragment
             //Create a specific intent that names the CrimeActivity class.
             //getActivity() is used to pass its hosting activity as the Context object that the Intent constructor requires.
-            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId()); //pass in the crime ID
+            //Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId()); //pass in the crime ID
+            //    Now, I am having a pressing of a list item in CrimeListFragment to start an instance of CrimePagerActivity
+            //instead of CrimeActivity
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
         }
     }
