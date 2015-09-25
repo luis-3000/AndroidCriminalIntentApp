@@ -19,13 +19,6 @@ public class CrimeLab {
     //Privae constructor, other classes won't be able to create a CrimeLab object
     private CrimeLab (Context context) {
         mCrimes = new ArrayList<>(); //construct an list of crimes
-
-        for(int i = 0; i < 100; i++) {
-            Crime crime = new Crime();
-            crime.setTitle("Crime # " + i);
-            crime.setSolved(i % 2 == 0); // Every other crime
-            mCrimes.add(crime);
-        }
     }
 
     /* Return the list of crimes. */
@@ -50,5 +43,10 @@ public class CrimeLab {
         return sCrimeLab;
     }
 
+    /* Adds a new crime to thelist of crimes when user presses the New Crime action item
+     * on the screen's top tool bar.  */
+    public void addCrime(Crime c) {
+        mCrimes.add(c);
+    }
 
 }

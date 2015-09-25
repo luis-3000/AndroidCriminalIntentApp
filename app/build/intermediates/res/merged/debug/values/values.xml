@@ -202,6 +202,14 @@
     <integer name="abc_max_action_buttons">2</integer>
     <integer name="cancel_button_image_alpha">127</integer>
     <integer name="status_bar_notification_info_maxnum">999</integer>
+    <!-- From: file:/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <plurals name="subtitle_plural">
+        <item quantity="one">%1$s crime</item>
+        <item quantity="other">%1$s crimes</item>
+    </plurals>
+    <!-- From: file:/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
+    <eat-comment/>
     <string name="abc_action_bar_home_description">Navigate home</string>
     <string name="abc_action_bar_home_description_format">%1$s, %2$s</string>
     <string name="abc_action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
@@ -229,9 +237,17 @@
     <string name="crime_title_label">Title</string>
     <string name="date_picker_title">Date of crime:</string>
     <string name="hello_world">Hello world!</string>
+    <string name="hide_subtitle">Hide Subtitle</string>
+    <string name="new_crime">New Crime</string>
+    <string name="show_subtitle">Show Subtitle</string>
     <!-- From: file:/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>
+    <!-- From: file:/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="subtitle_format">%1$scrimes</string>
+    <!-- From: file:/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
+    <eat-comment/>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
     <style name="AlertDialog.AppCompat.Light" parent="Base.AlertDialog.AppCompat.Light"/>
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>

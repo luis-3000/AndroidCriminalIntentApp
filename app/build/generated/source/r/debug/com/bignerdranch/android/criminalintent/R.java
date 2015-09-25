@@ -1596,7 +1596,8 @@ containing a value of this type.
         public static final int abc_textfield_search_activated_mtrl_alpha=0x7f02003b;
         public static final int abc_textfield_search_default_mtrl_alpha=0x7f02003c;
         public static final int abc_textfield_search_material=0x7f02003d;
-        public static final int notification_template_icon_bg=0x7f02003e;
+        public static final int ic_menu_add=0x7f02003e;
+        public static final int notification_template_icon_bg=0x7f02003f;
     }
     public static final class id {
         public static final int action0=0x7f0c0058;
@@ -1614,7 +1615,7 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f0c003c;
         public static final int action_mode_bar_stub=0x7f0c003b;
         public static final int action_mode_close_button=0x7f0c0024;
-        public static final int action_settings=0x7f0c0065;
+        public static final int action_settings=0x7f0c0067;
         public static final int activity_chooser_view_content=0x7f0c0025;
         public static final int activity_crime_pager_view_pager=0x7f0c004e;
         public static final int alertTitle=0x7f0c002f;
@@ -1657,6 +1658,8 @@ containing a value of this type.
         public static final int list_item_crime_solved_check_box=0x7f0c0055;
         public static final int list_item_crime_title_text_view=0x7f0c0056;
         public static final int media_actions=0x7f0c005b;
+        public static final int menu_item_new_crime=0x7f0c0065;
+        public static final int menu_item_show_subtitle=0x7f0c0066;
         public static final int middle=0x7f0c001b;
         public static final int multiply=0x7f0c0014;
         public static final int never=0x7f0c001f;
@@ -1754,10 +1757,14 @@ containing a value of this type.
         public static final int support_simple_spinner_dropdown_item=0x7f040029;
     }
     public static final class menu {
-        public static final int menu_crime=0x7f0d0000;
+        public static final int fragment_crime_list=0x7f0e0000;
+        public static final int menu_crime=0x7f0e0001;
     }
     public static final class mipmap {
         public static final int ic_launcher=0x7f030000;
+    }
+    public static final class plurals {
+        public static final int subtitle_plural=0x7f0d0000;
     }
     public static final class string {
         public static final int abc_action_bar_home_description=0x7f060000;
@@ -1785,7 +1792,11 @@ containing a value of this type.
         public static final int crime_title_label=0x7f060017;
         public static final int date_picker_title=0x7f060018;
         public static final int hello_world=0x7f060019;
+        public static final int hide_subtitle=0x7f06001a;
+        public static final int new_crime=0x7f06001b;
+        public static final int show_subtitle=0x7f06001c;
         public static final int status_bar_notification_info_overflow=0x7f060011;
+        public static final int subtitle_format=0x7f06001d;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f08007a;

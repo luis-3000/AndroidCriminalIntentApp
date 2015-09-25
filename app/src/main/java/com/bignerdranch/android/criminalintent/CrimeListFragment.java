@@ -3,9 +3,13 @@ package com.bignerdranch.android.criminalintent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -21,6 +25,15 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private boolean mSubtitleVisible;
+    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+
+    @Override
+    /* Lets the FragementManager know that CrimeListFragment needs to receive menu callbacks. */
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,9 +42,73 @@ public class CrimeListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // To keep the visibility of the subtitle across rotations, the mSubtitleVisible instance variable is saved
+        // across rotations with the 'saved instance state' mechanism
+        if (savedInstanceState != null) {
+            mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
+        }
+
         updateUI();
 
         return view;
+    }
+
+    @Override
+    /* Overriden method to inflate the menu defined in fragment_crime_list.xml  */
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime_list, menu); //passed in the resource ID of the menu file
+
+        //Trigger a reaction of the action items when the use presses on the 'Show Subtitle' action item.
+        MenuItem subtitleItem = menu.findItem(R.id.menu_item_show_subtitle);
+        if (mSubtitleVisible) {  //If visible, hide it
+            subtitleItem.setTitle(R.string.hide_subtitle);
+        } else {  //else show it
+            subtitleItem.setTitle(R.string.show_subtitle);
+        }
+    }
+
+    @Override
+    /* Once the MenuItem is handled it should return true to indicate that not further processing is
+    * necessary. The default case call to the superclass implementation if the item ID is not in the
+    * current implementation. */
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_new_crime: //Adding a new crime from the toolbar
+                Crime crime = new Crime();
+                CrimeLab.get(getActivity()).addCrime(crime);
+                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                startActivity(intent);
+                return true;
+            case R.id.menu_item_show_subtitle:updateSubtitle(); //Show number of crimes in the list added manually by user so far
+                mSubtitleVisible = !mSubtitleVisible;
+                getActivity().invalidateOptionsMenu();
+                updateSubtitle();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /* Sets the subtitle of the toolbar. */
+    private void updateSubtitle() {
+        CrimeLab crimeLab = CrimeLab.get(getActivity());
+        int crimeSize = crimeLab.getCrimes().size(); //get plurality correct
+        int crimeCount = crimeLab.getCrimes().size();
+
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeSize, crimeSize);
+        //String subtitle = getString(R.string.subtitle_format, crimeCount); //generate the subtitle string
+
+        //Respect the mSubtitleVisible member variable when showing or hiding the subtitle in the toolbar
+        if (!mSubtitleVisible) {
+            subtitle = null;
+        }
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity(); //Activity hosting the CrimeListFragment is cast to an AppCompatActivity
+                                                                        //CriminalIntent uses the AppCompat library so all activities will be a
+                                                                        // subclass of AppCompatActivity, which alows access to the toolbar
+        activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
     /* Overriding method.
@@ -44,6 +121,12 @@ public class CrimeListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
     }
 
     /* Havind the CrimeAdapter, now it's time to connect it to the RecyclerView.
@@ -60,11 +143,15 @@ public class CrimeListFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
 
+        //Make sure to update the subtitle which will update correctly the number of crimes
+        // when the device is rotated
+        updateSubtitle();
 
         mCrimeRecyclerView.setAdapter(mAdapter);
     }
 
-    /* Defining the ViewHolder asn an inner class. */   //Modified to handle presses for an entire row
+    /* Defining the ViewHolder asn an inner class.
+     * Later modified to handle presses for an entire row. */
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Crime mCrime;
         private TextView mTitleTextView;
@@ -83,7 +170,7 @@ public class CrimeListFragment extends Fragment {
         }
 
         /* When given a Crime, CrimeHolder will now update the title TextView, date TextView, and solved
-        * CheckBox to refelct the state of the Crime. */
+        * CheckBox to reflect the state of the Crime. */
         public void bindCrime(Crime crime) {
             mCrime = crime;
             mTitleTextView.setText(mCrime.getTitle());
@@ -96,8 +183,8 @@ public class CrimeListFragment extends Fragment {
             //Start a CrimeActivity from a Fragment
             //Create a specific intent that names the CrimeActivity class.
             //getActivity() is used to pass its hosting activity as the Context object that the Intent constructor requires.
-            //Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId()); //pass in the crime ID
-            //    Now, I am having a pressing of a list item in CrimeListFragment to start an instance of CrimePagerActivity
+                //Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId()); //pass in the crime ID
+            // Changed, now, I am having a pressing of a list item in CrimeListFragment to start an instance of CrimePagerActivity
             //instead of CrimeActivity
             Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);

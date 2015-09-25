@@ -45,7 +45,7 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
 
-    /* method that accepts a UUID, creates an arguments bundle, creates a fragment instance
+    /* Constructor that accepts a UUID, creates an arguments bundle, creates a fragment instance
     *  and then attaches the arguments to the fragment. */
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
