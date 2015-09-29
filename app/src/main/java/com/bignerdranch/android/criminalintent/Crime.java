@@ -16,7 +16,16 @@ public class Crime {
     //Constructor
     public Crime() {
         //Generate unique identifier for each "office crime"
-        mId = UUID.randomUUID();
+        //mId = UUID.randomUUID();
+        //mDate = new Date();
+
+        //Using CrimeCursorWrapper to return a Crime
+        this(UUID.randomUUID());
+    }
+
+    // Overloaded constructor
+    public Crime(UUID id) {
+        mId = id;
         mDate = new Date();
     }
 

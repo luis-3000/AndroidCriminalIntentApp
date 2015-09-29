@@ -69,6 +69,14 @@ public class CrimeFragment extends Fragment {
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
     }
 
+
+    @Override
+    /* Updates the CrimeLab's copy of 'Crime' instances. This effectively updates the crimes list. */
+    public void onPause() {
+        super.onPause();
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+    }
+
     @Override
     /* Overrinding this method to make it retrieve the 'extra', set the date on the Crime, and
     * refresh the text of the date button. */

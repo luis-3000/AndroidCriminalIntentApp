@@ -1791,12 +1791,11 @@ containing a value of this type.
         public static final int crime_title_hint=0x7f060016;
         public static final int crime_title_label=0x7f060017;
         public static final int date_picker_title=0x7f060018;
-        public static final int hello_world=0x7f060019;
-        public static final int hide_subtitle=0x7f06001a;
-        public static final int new_crime=0x7f06001b;
-        public static final int show_subtitle=0x7f06001c;
+        public static final int hide_subtitle=0x7f060019;
+        public static final int new_crime=0x7f06001a;
+        public static final int show_subtitle=0x7f06001b;
         public static final int status_bar_notification_info_overflow=0x7f060011;
-        public static final int subtitle_format=0x7f06001d;
+        public static final int subtitle_format=0x7f06001c;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f08007a;

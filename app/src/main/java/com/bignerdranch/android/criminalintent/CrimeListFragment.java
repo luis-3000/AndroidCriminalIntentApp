@@ -54,6 +54,46 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
+    /* Sets the subtitle of the toolbar. */
+    private void updateSubtitle() {
+        CrimeLab crimeLab = CrimeLab.get(getActivity());
+        int crimeCount = crimeLab.getCrimes().size();
+        int crimeSize = crimeLab.getCrimes().size(); //get plurality correct
+
+        //String subtitle = getString(R.string.subtitle_format, crimeCount); //generate the subtitle string
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeSize, crimeSize);
+
+        //Respect the mSubtitleVisible member variable when showing or hiding the subtitle in the toolbar
+        if (!mSubtitleVisible) {
+            subtitle = null;
+        }
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity(); //Activity hosting the CrimeListFragment is cast to an AppCompatActivity
+                                                                        //CriminalIntent uses the AppCompat library so all activities will be a
+                                                                        // subclass of AppCompatActivity, which alows access to the toolbar
+        activity.getSupportActionBar().setSubtitle(subtitle);
+    }
+
+
+    /* Overriding method.
+    * Triggers a call to the updateUI() to reload the list.
+    * This method is being overriden to update the RecyclerView becuase we cannot assume that the
+    * activity will be stopped when another activity is in front of it. If the other activity is
+    * transparent, the current activity may just be paused. This is the safest place to take action
+    * to update a fragment's view. */
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
+    }
+
+
     @Override
     /* Overriden method to inflate the menu defined in fragment_crime_list.xml  */
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -62,6 +102,7 @@ public class CrimeListFragment extends Fragment {
 
         //Trigger a reaction of the action items when the use presses on the 'Show Subtitle' action item.
         MenuItem subtitleItem = menu.findItem(R.id.menu_item_show_subtitle);
+
         if (mSubtitleVisible) {  //If visible, hide it
             subtitleItem.setTitle(R.string.hide_subtitle);
         } else {  //else show it
@@ -91,43 +132,6 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    /* Sets the subtitle of the toolbar. */
-    private void updateSubtitle() {
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
-        int crimeSize = crimeLab.getCrimes().size(); //get plurality correct
-        int crimeCount = crimeLab.getCrimes().size();
-
-        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeSize, crimeSize);
-        //String subtitle = getString(R.string.subtitle_format, crimeCount); //generate the subtitle string
-
-        //Respect the mSubtitleVisible member variable when showing or hiding the subtitle in the toolbar
-        if (!mSubtitleVisible) {
-            subtitle = null;
-        }
-
-        AppCompatActivity activity = (AppCompatActivity) getActivity(); //Activity hosting the CrimeListFragment is cast to an AppCompatActivity
-                                                                        //CriminalIntent uses the AppCompat library so all activities will be a
-                                                                        // subclass of AppCompatActivity, which alows access to the toolbar
-        activity.getSupportActionBar().setSubtitle(subtitle);
-    }
-
-    /* Overriding method.
-    * Triggers a call to the updateUI() to reload the list.
-    * This method is being overriden to update the RecyclerView becuase we cannot assume that the
-    * activity will be stopped when another activity is in front of it. If the other activity is
-    * transparent, the current activity may just be paused. This is the safest place to take action
-    * to update a fragment's view. */
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateUI();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
-    }
 
     /* Havind the CrimeAdapter, now it's time to connect it to the RecyclerView.
     * This method sets up CrimeListFragment's user interface. Initial functionality will be to
@@ -140,6 +144,7 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else { //Otherwise, send notification that it's already been set up
+            mAdapter.setCrimes(crimes);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -231,6 +236,11 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        /* Swaps out the crimes it displays.  */
+        public void setCrimes(List<Crime> crimes) {
+            mCrimes = crimes;
         }
     }
 
