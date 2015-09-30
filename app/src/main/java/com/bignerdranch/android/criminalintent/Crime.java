@@ -12,6 +12,7 @@ public class Crime {
     private String mTitle;
     private Date mDate; //The date an "office crime" occurred. Sets date to current date.
     private boolean mSolved;
+    private String mSuspect; //To hold the name of a 'suspect'
 
     //Constructor
     public Crime() {
@@ -56,4 +57,13 @@ public class Crime {
     public void setSolved(boolean solved) {
         mSolved = solved;
     }
+
+    public String getSuspect() {
+        return mSuspect;
+    }
+
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
+    }
+
 }

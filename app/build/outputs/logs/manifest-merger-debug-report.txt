@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/src/main/AndroidManifest.xml:2:1-24:12
+ADDED from /Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/src/main/AndroidManifest.xml:2:1-25:12
 	package
 		ADDED from /Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/src/main/AndroidManifest.xml:3:5-54
 		INJECTED from /Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/src/main/AndroidManifest.xml

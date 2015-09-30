@@ -2,6 +2,20 @@
 <items version="2" >
 
     <item
+        jar="/Users/joseluiscastillo/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/support-annotations-23.0.1-740b69320f5af46e47522efe9215daf92eb91b86.jar" />
+    </item>
+    <item
+        jar="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="4356e230a981d1bbf047d848b91bc0d9b7c5bacc">
+        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/classes-969c54f2fce832b300774c417ca759f1a7c8ee16.jar" />
+    </item>
+    <item
         jar="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/jars/classes.jar"
         jumboMode="false"
         revision="23.0.0"
@@ -21,20 +35,6 @@
         revision="23.0.0"
         sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
         <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.1-6e883723a89540034b1ede2c64ec2521e96ab7af.jar" />
-    </item>
-    <item
-        jar="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.0.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.0"
-        sha1="4356e230a981d1bbf047d848b91bc0d9b7c5bacc">
-        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/classes-969c54f2fce832b300774c417ca759f1a7c8ee16.jar" />
-    </item>
-    <item
-        jar="/Users/joseluiscastillo/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar"
-        jumboMode="false"
-        revision="23.0.0"
-        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
-        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/support-annotations-23.0.1-740b69320f5af46e47522efe9215daf92eb91b86.jar" />
     </item>
 
 </items>

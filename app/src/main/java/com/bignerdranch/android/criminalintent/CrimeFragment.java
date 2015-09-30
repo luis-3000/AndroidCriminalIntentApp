@@ -27,6 +27,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.text.format.DateFormat;
 
 import java.util.Date;
 import java.util.UUID;
@@ -39,11 +40,14 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0; //Constant for the request code
+    private static final int REQUEST_CONTACT = 1;  //Request code from contact's list to list as a 'suspect'
 
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private Button mReportButton;
+    private Button mSuspectButton; //Button to request a 'suspect' from the contact's list
 
     /* Constructor that accepts a UUID, creates an arguments bundle, creates a fragment instance
     *  and then attaches the arguments to the fragment. */
@@ -90,11 +94,67 @@ public class CrimeFragment extends Fragment {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             updateDate();
+        } else if(requestCode == REQUEST_CONTACT && data != null) {
+            Uri contactUri = data.getData();
+
+            //Specify which fields you want your query to return values for
+            String[] queryFields = new String[] {
+                    ContactsContract.Contacts.DISPLAY_NAME
+            };
+
+
+            //Next, we create a query that asks for all the display names of the contacts in the returned data,
+            ////then query the contact's database and get a Cursor object to work with.
+
+            //Perform your query - the contactUri is like a "where clause here
+            Cursor c = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
+
+
+            try {
+                //Double check that you actually got results
+                if (c.getCount() == 0) {
+                    return;
+                }
+
+                //Pull out the first column of the first row of data -  that is the suspect's name.
+                c.moveToFirst(); //Because the curors only contains one item, we move it to the first item
+                String suspect = c.getString(0);  //... and get it as a string, this string will be the name of the suspect.
+                mCrime.setSuspect(suspect);       //set the suspect
+                mSuspectButton.setText(suspect);  //set the corresponding button
+            } finally {
+                c.close();
+            }
         }
     }
 
     private void updateDate() {
         mDateButton.setText(mCrime.getDate().toString());
+    }
+
+    /* Creates four strings and then pieces them together and return a complete report. */
+    private String getCrimeReport() {
+        String solvedString = null;
+
+        if (mCrime.isSolved()) {
+            solvedString = getString(R.string.crime_report_solved);
+        } else {
+            solvedString = getString(R.string.crime_report_unsolved);
+        }
+
+        String dateFormat = "EEE, MMM dd";
+        String dateString = DateFormat.format(dateFormat, mCrime.getDate()).toString();
+
+        String suspect = mCrime.getSuspect();
+
+        if (suspect == null) {
+            suspect = getString(R.string.crime_report_no_suspect);
+        } else {
+            suspect = getString(R.string.crime_report_suspect, suspect);
+        }
+
+        String report = getString(R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect);
+
+        return report;
     }
 
     @Override
@@ -169,6 +229,48 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSolved(isChecked);
             }
         });
+
+        //Send a report
+        mReportButton = (Button) v.findViewById(R.id.crime_report);
+        mReportButton.setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v) {
+               Intent i = new Intent(Intent.ACTION_SEND); //Intent constructor that accepts a string which is a constant defining the action
+               i.setType("text/plain");
+               i.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
+               i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
+               //Make sure to always display a chooser to send the report (email/twitter,etc)
+               i = Intent.createChooser(i, getString(R.string.send_report));
+               startActivity(i);
+           }
+        });
+
+        //Get a reference to the 'request suspect name button'
+        final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        mSuspectButton = (Button)v.findViewById(R.id.crime_suspect);
+
+        //... and set a listener to it
+        mSuspectButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivityForResult(pickContact, REQUEST_CONTACT);
+            }
+        });
+
+        if (mCrime.getSuspect() != null) {
+            mSuspectButton.setText(mCrime.getSuspect());
+        }
+
+        //Guard against no contact app to pick 'suspects'
+        //PackageManager know about all the componetns installed on the Android device, including all of its activities.
+        PackageManager packageManager = getActivity().getPackageManager();
+
+        //By calling resolveActivity(Intent, int) we are asking it to find an activity that matches the Intent we gave it.
+        //The MATCH_DEFAULT_ONLY flag restrict this search to activitties with the DATEGORY_DEFAULT flag, just like startActivity(Intent) does.
+        //If the search is successful, it will return an instance of ResolveInfo telling us all about which activity it found. In contracts, if
+        //it returns null, the game is up, no contacts app - so we disable the usedless suspect button.
+        if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null)
+        {
+            mSuspectButton.setEnabled(false);
+        }
 
         return v;
     }
