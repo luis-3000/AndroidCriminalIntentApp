@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
 import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
 import com.bignerdranch.android.criminalintent.database.CrimeDbSchema;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +19,8 @@ import java.util.UUID;
  * Created by joseluiscastillo on 9/18/15.
  * This will be a singleton class which will have a private constructor and a get() method.
  * A singleton is a class that allows only one instance of itself to be created.
+ *
+ * CrimeLab is responsible for everything related to persisting data in CriminalIntent.
  */
 public class CrimeLab {
 
@@ -99,6 +103,20 @@ public class CrimeLab {
 
     }
 
+    /* Finds where the photos for our 'suspects' should live.
+    *  This method does not create any files on the filesystem. It only returns File objects
+    *  that point to the right locations. */
+    public File getPhotoFile(Crime crime) {
+
+        File externalFilesDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        // Verify there's external storage to save the pictures to
+        if (externalFilesDir == null) {
+            return null;
+        }
+
+        return new File(externalFilesDir, crime.getPhotoFilename());
+    }
 
     /* Writes and updates to databases are done with the help of a class called 'ContentValues,
        * which is a key-value store class, and it is specifically designed to store the kinds of data

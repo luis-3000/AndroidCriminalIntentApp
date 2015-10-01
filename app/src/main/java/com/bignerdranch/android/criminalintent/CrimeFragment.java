@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
@@ -29,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.text.format.DateFormat;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
@@ -41,13 +44,17 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0; //Constant for the request code
     private static final int REQUEST_CONTACT = 1;  //Request code from contact's list to list as a 'suspect'
+    private static final int REQUEST_PHOTO=2;
 
     private Crime mCrime;
+    private File mPhototFile;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
     private Button mSuspectButton; //Button to request a 'suspect' from the contact's list
+    private ImageButton mPhotoButton;
+    private ImageView mPhotoView;
 
     /* Constructor that accepts a UUID, creates an arguments bundle, creates a fragment instance
     *  and then attaches the arguments to the fragment. */
@@ -71,6 +78,9 @@ public class CrimeFragment extends Fragment {
 
         //After getting the ID, it is used to fetch the Crime from CrimeLab.
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+
+        // Stash away the location of the photo file for use in other parts
+        mPhototFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
     }
 
 
@@ -103,8 +113,8 @@ public class CrimeFragment extends Fragment {
             };
 
 
-            //Next, we create a query that asks for all the display names of the contacts in the returned data,
-            ////then query the contact's database and get a Cursor object to work with.
+            /* Next, we create a query that asks for all the display names of the contacts in the returned data,
+             * then query the contact's database and get a Cursor object to work with. */
 
             //Perform your query - the contactUri is like a "where clause here
             Cursor c = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
@@ -124,6 +134,8 @@ public class CrimeFragment extends Fragment {
             } finally {
                 c.close();
             }
+        } else  if (requestCode == REQUEST_PHOTO) {
+            updatePhotoView();
         }
     }
 
@@ -155,6 +167,16 @@ public class CrimeFragment extends Fragment {
         String report = getString(R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect);
 
         return report;
+    }
+
+    /* Here, we load the Bitmap into the ImageView. */
+    private void updatePhotoView() {
+        if (mPhototFile == null || !mPhototFile.exists()) {
+            mPhotoView.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhototFile.getPath(), getActivity());
+            mPhotoView.setImageBitmap(bitmap);
+        }
     }
 
     @Override
@@ -260,17 +282,44 @@ public class CrimeFragment extends Fragment {
         }
 
         //Guard against no contact app to pick 'suspects'
-        //PackageManager know about all the componetns installed on the Android device, including all of its activities.
+        //PackageManager know about all the components installed on the Android device, including all of its activities.
         PackageManager packageManager = getActivity().getPackageManager();
 
-        //By calling resolveActivity(Intent, int) we are asking it to find an activity that matches the Intent we gave it.
-        //The MATCH_DEFAULT_ONLY flag restrict this search to activitties with the DATEGORY_DEFAULT flag, just like startActivity(Intent) does.
-        //If the search is successful, it will return an instance of ResolveInfo telling us all about which activity it found. In contracts, if
-        //it returns null, the game is up, no contacts app - so we disable the usedless suspect button.
+        /* By calling resolveActivity(Intent, int) we are asking it to find an activity that matches the Intent we gave it.
+         * The MATCH_DEFAULT_ONLY flag restrict this search to activities with the CATEGORY_DEFAULT flag, just like startActivity(Intent) does.
+         * If the search is successful, it will return an instance of ResolveInfo telling us all about which activity it found. In contracts, if
+         * it returns null, the game is up, no contacts app - so we disable the useless suspect button. */
         if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null)
         {
             mSuspectButton.setEnabled(false);
         }
+
+        // Now, handle the image button and photo view for the 'suspect' which will be pulled from the pictures folder on the device
+        mPhotoButton = (ImageButton)v.findViewById(R.id.crime_camera);
+
+        // Create n Intent to ask for a new picture to be taken into the location saved in mPhotoFile
+        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Check if there is a location at which to save the photo AND if there is a camera app that can take the photo
+        boolean canTakePhoto = mPhototFile != null && captureImage.resolveActivity(packageManager) != null;
+
+        if (canTakePhoto) {
+            Uri uri = Uri.fromFile(mPhototFile); //Tell where to save the photo image on the filesystem by passing Uri
+                                                 //pointing to where we want to save the file in MediaStore.EXTRA_OUTPUT
+            captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        }
+
+        mPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(captureImage, REQUEST_PHOTO);
+            }
+        });
+
+        mPhotoView = (ImageView)v.findViewById(R.id.crime_photo);
+
+        // Call method to update the photo view with the correct bitmap size
+        updatePhotoView();
 
         return v;
     }

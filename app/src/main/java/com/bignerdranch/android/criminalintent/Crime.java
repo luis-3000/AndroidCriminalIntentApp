@@ -66,4 +66,11 @@ public class Crime {
         mSuspect = suspect;
     }
 
+    /* To get a well-known file name.
+    *  This method wont' know what folder the phot will be stored in. However,
+    *  the filename will be unique, since it is abased on the Crime's ID. */
+    public String getPhotoFilename() {
+        return "IMG_ " + getId().toString() + ".jpg";
+    }
+
 }

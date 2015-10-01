@@ -2,6 +2,20 @@
 <items version="2" >
 
     <item
+        jar="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/libs/internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.1-6e883723a89540034b1ede2c64ec2521e96ab7af.jar" />
+    </item>
+    <item
+        jar="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/classes-a34d4d7c0dfce2f47f35939e7a9fa7f861799161.jar" />
+    </item>
+    <item
         jar="/Users/joseluiscastillo/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar"
         jumboMode="false"
         revision="23.0.0"
@@ -21,20 +35,6 @@
         revision="23.0.0"
         sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
         <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/classes-89be89c68358f4437dc595d664fe6d1988cf221d.jar" />
-    </item>
-    <item
-        jar="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.0"
-        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
-        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/classes-a34d4d7c0dfce2f47f35939e7a9fa7f861799161.jar" />
-    </item>
-    <item
-        jar="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/libs/internal_impl-23.0.1.jar"
-        jumboMode="false"
-        revision="23.0.0"
-        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
-        <dex dex="/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.1-6e883723a89540034b1ede2c64ec2521e96ab7af.jar" />
     </item>
 
 </items>
