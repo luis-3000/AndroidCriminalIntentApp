@@ -1,5 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ActionMenuView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +30,34 @@ public class CrimeListFragment extends Fragment {
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+    private Callbacks mCallbacks;
+
+    /*
+     * Required interface for hosting activities.
+     * */
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
+    }
+
+//    @Override
+//    public void onAttach(Activity activity) { //This method has been deprecated, see below replacement as per this discussion:
+//        super.onAttach(activity);            //  http://stackoverflow.com/questions/32083053/android-fragment-onattach-deprecated
+//        mCallbacks = (Callbacks) activity;
+//    }
+
+    @Override
+    /* Activity is a context so we simple check if the context is an Activity and cast it if necessary. */
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+
+//        Activity _activity;
+//
+//        if (context instanceof Activity) {
+//            _activity = (Activity) context;
+//            mCallbacks = (Callbacks) _activity;
+//        }
+    }
 
     @Override
     /* Lets the FragementManager know that CrimeListFragment needs to receive menu callbacks. */
@@ -93,6 +124,11 @@ public class CrimeListFragment extends Fragment {
         outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null; //null because afterward, we cannot access the activity or count on the activity to continue to exist
+    }
 
     @Override
     /* Overriden method to inflate the menu defined in fragment_crime_list.xml  */
@@ -119,8 +155,10 @@ public class CrimeListFragment extends Fragment {
             case R.id.menu_item_new_crime: //Adding a new crime from the toolbar
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
-                startActivity(intent);
+                //Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                //startActivity(intent);
+                updateUI();
+                mCallbacks.onCrimeSelected(crime);
                 return true;
             case R.id.menu_item_show_subtitle:updateSubtitle(); //Show number of crimes in the list added manually by user so far
                 mSubtitleVisible = !mSubtitleVisible;
@@ -136,7 +174,7 @@ public class CrimeListFragment extends Fragment {
     /* Havind the CrimeAdapter, now it's time to connect it to the RecyclerView.
     * This method sets up CrimeListFragment's user interface. Initial functionality will be to
     * create a CrimeAdapter and set it on the RecyclerView. Other functionality to be added later. */
-    private void updateUI() {
+    public void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
@@ -191,8 +229,9 @@ public class CrimeListFragment extends Fragment {
                 //Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId()); //pass in the crime ID
             // Changed, now, I am having a pressing of a list item in CrimeListFragment to start an instance of CrimePagerActivity
             //instead of CrimeActivity
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            //Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            //startActivity(intent);
+            mCallbacks.onCrimeSelected(mCrime);
         }
     }
 

@@ -10,4 +10,7 @@
     <dimen name="abc_text_size_subtitle_material_toolbar">16dp</dimen>
     <dimen name="abc_text_size_title_material_toolbar">20dp</dimen>
     <integer name="abc_max_action_buttons">5</integer>
+    <!-- From: file:/Users/joseluiscastillo/AndroidStudioProjects/CriminalIntent/app/src/main/res/values-sw600dp/refs.xml -->
+    <eat-comment/>
+    <item name="activity_masterdetail" type="layout">@layout/activity_twopane</item>
 </resources>

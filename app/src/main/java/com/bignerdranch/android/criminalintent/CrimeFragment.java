@@ -55,6 +55,15 @@ public class CrimeFragment extends Fragment {
     private Button mSuspectButton; //Button to request a 'suspect' from the contact's list
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Callbacks mCallbacks;
+
+    /*
+     * Required interface for hosting activities
+     */
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
+    }
+
 
     /* Constructor that accepts a UUID, creates an arguments bundle, creates a fragment instance
     *  and then attaches the arguments to the fragment. */
@@ -64,6 +73,12 @@ public class CrimeFragment extends Fragment {
         CrimeFragment fragment = new CrimeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks)activity;
     }
 
     @Override
@@ -92,6 +107,12 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    @Override
     /* Overrinding this method to make it retrieve the 'extra', set the date on the Crime, and
     * refresh the text of the date button. */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -103,6 +124,7 @@ public class CrimeFragment extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
+            updateCrime();
             updateDate();
         } else if(requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
@@ -130,13 +152,20 @@ public class CrimeFragment extends Fragment {
                 c.moveToFirst(); //Because the curors only contains one item, we move it to the first item
                 String suspect = c.getString(0);  //... and get it as a string, this string will be the name of the suspect.
                 mCrime.setSuspect(suspect);       //set the suspect
+                updateCrime();
                 mSuspectButton.setText(suspect);  //set the corresponding button
             } finally {
                 c.close();
             }
         } else  if (requestCode == REQUEST_PHOTO) {
+            updateCrime();
             updatePhotoView();
         }
+    }
+
+    private void updateCrime() {
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 
     private void updateDate() {
@@ -203,6 +232,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString()); //Set crime's title to user's input
+                updateCrime();
             }
 
             @Override
@@ -249,6 +279,7 @@ public class CrimeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //Set the crime's solved property
                 mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
 
